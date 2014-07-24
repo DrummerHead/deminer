@@ -13,22 +13,98 @@
 <!-- endbuild -->
 
 <!-- build:css(.tmp) styles/main.css -->
+<link rel="stylesheet" href="styles/minesweeper.min.css">
 <link rel="stylesheet" href="styles/main.css">
 <!-- endbuild -->
 </head>
 <body>
 
+<div id="game-container" class="z100">
+  <span id="options-link" title="game options">Game</span> | <span href="#" id="display-link" title="size/position">Display</span>
+  <div id="game" oncontextmenu="return false;" ondrag="return false;" ondragstart="return false;"></div>
+  <form id="options-form">
+    <table cellspacing="0" cellpadding="2" id="options" class="dialog">
+      <tr class="dialog-title">
+        <td style="padding: 3px;">Game</td>
+        <td colspan="3" style="padding: 3px; text-align: right;">
+          <span id="options-close" class="dialog-close" title="close this box">&times;</span>
+        </td>
+      </tr>
+      <tr style="background-color: #DDDDDD;">
+        <td></td>
+        <td>Height</td>
+        <td>Width</td>
+        <td>Mines</td>
+      </tr>
+      <tr>
+        <td><label><input type="radio" name="field" id="beginner" /> <strong>Beginner</strong></label></td>
+        <td>9</td>
+        <td>9</td>
+        <td>10</td>
+      </tr>
+      <tr>
+        <td><label><input type="radio" name="field" id="intermediate" /> <strong>Intermediate</strong></label></td>
+        <td>16</td>
+        <td>16</td>
+        <td>40</td>
+      </tr>
+      <tr>
+        <td><label><input type="radio" name="field" checked="checked" id="expert" /> <strong>Expert</strong></label></td>
+        <td>16</td>
+        <td>30</td>
+        <td>99</td>
+      </tr>
+      <tr>
+        <td><label><input type="radio" name="field" id="custom" /> Custom</label></td>
+        <td><input type="text" value="20" id="custom_height" class="dialog-text-input" onfocus="$('#custom').attr('checked', true);" /></td>
+        <td><input type="text" value="30" id="custom_width" class="dialog-text-input" onfocus="$('#custom').attr('checked', true);" /></td>
+        <td><input type="text" value="145" id="custom_mines" class="dialog-text-input" onfocus="$('#custom').attr('checked', true);" /></td>
+      </tr>
+      <tr style="background-color: #DDDDDD;">
+        <td><input type="submit" value="New Game" class="dialogText" style="vertical-align: middle;" /></td>
+        <td colspan="3">
+          <label style="margin-bottom: 0;"><input type="checkbox" id="marks" /> Marks (?)</label>
+        </td>
+      </tr>
+    </table>
+  </form>
+  <table cellspacing="0" cellpadding="2" id="display" class="dialog">
+    <tr class="dialog-title">
+      <td>Display</td>
+      <td style="text-align: right;">
+        <span id="display-close" class="dialog-close" title="close this box">&times;</span>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 6px;"><strong>Zoom</strong></td>
+      <td style="padding: 6px;">
+        <label><input type="radio" name="zoom" id="zoom100" value="1" checked="checked"/> 100%</label><br />
+        <label><input type="radio" name="zoom" id="zoom150" value="1.5" /> 150%</label><br />
+        <label><input type="radio" name="zoom" id="zoom200" value="2" /> 200%</label>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 6px; border-top: 1px solid #AAA;"><strong>Position</strong></td>
+      <td style="padding: 6px; border-top: 1px solid #AAA;">
+        <label><input type="radio" name="position" id="position-center" value="center" /> Center</label><br />
+        <label><input type="radio" name="position" id="position-left" value="left" checked="checked" /> Left</label>
+      </td>
+    </tr>
+  </table>
+</div>
 
 
 <div id='scripts'>
 <!-- build:js scripts/vendor.js -->
 <!-- bower:js -->
-<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="../bower_components/jquery/jquery.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 
 
 <!-- build:js({app,.tmp}) scripts/main.js -->
+<script src="scripts/minesweeper.min.js"></script>
+<script src="scripts/settings.js"></script>
 <script src="scripts/main.js"></script>
 <!-- endbuild -->
 </div>
