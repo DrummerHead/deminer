@@ -1,8 +1,9 @@
 minefield = $("#game")
+openRegex = /open(\d)/
 
 
 getOpen = (minefield) ->
-  minefield.find('[class*="open"]').filter(":visible")
+  minefield.find('[class*="open"]:not(.open0)').filter(":visible")
 
 
 getNeighbors = (square) ->
@@ -15,7 +16,8 @@ getNeighbors = (square) ->
 
 
 getMyNum = (square) ->
-  parseInt(square.attr('class').match(/open(\d)/)[1], 10)
+  parseInt(square.attr('class').match(openRegex)[1], 10)
+
 
 countClosed = (squares) ->
   length = 0
@@ -27,25 +29,25 @@ countClosed = (squares) ->
 
 flagBomb = (square) ->
   unless square.hasClass('bombflagged')
-    # console.log "flagBomb", square.attr "id"
     square
       .trigger({type: 'mousedown', button: 2})
       .trigger({type: 'mouseup', button: 2})
 
-research = (square) ->
 
-  # console.log "research", square.attr "id"
+research = (square) ->
   square
     .trigger({type: 'mousedown', button: 0})
     .trigger({type: 'mousedown', button: 2})
     .trigger({type: 'mouseup', button: 0})
     .trigger({type: 'mouseup', button: 2})
 
+
 doNeighborsEqualMyNum = (square) ->
   closedNeighborsLength = countClosed(getNeighbors(square))
 
   if closedNeighborsLength != 0 && closedNeighborsLength == getMyNum(square)
     true
+
 
 flagNeighbors = (square) ->
   neighbors = getNeighbors(square)
@@ -55,39 +57,54 @@ flagNeighbors = (square) ->
     neighbors.each () ->
       flagBomb($(this))
 
+isFertile = (square) ->
+  if !(square.data("fertile") == false)
+    if not square.data("fertile")?
+      square.data("fertile", false)
+
+    _isFertile = false
+    getNeighbors(square).each () ->
+      if $(this).hasClass("blank")
+        _isFertile = true
+        square.data("fertile", _isFertile)
+    return _isFertile
+
+  else
+    false
+
+
+swipe = (square) ->
+  # square.css {"outline":"red 2px solid"}
+  if isFertile square
+    flagNeighbors square
+    research square
+
+
 $(window).keypress (event) ->
   if event.which == 106
-    minefield.css {"outline":"4px solid red"}
+    minefield.css {"outline":"1em solid red"}
 
     previousOpenMinefieldLength = 0
     previousPreviousOpenMinefieldLength = 0
     openMinefield = getOpen(minefield)
 
     tick = setInterval () ->
-      console.log openMinefield.length
-      console.log previousOpenMinefieldLength
-      console.log previousPreviousOpenMinefieldLength
-      console.log "------"
-
       if openMinefield.length != previousPreviousOpenMinefieldLength
           openMinefield.each () ->
-            flagNeighbors $(this)
-            research $(this)
+            swipe $(this)
+
           previousPreviousOpenMinefieldLength = previousOpenMinefieldLength
           previousOpenMinefieldLength = openMinefield.length
           openMinefield = getOpen(minefield)
       else
-        minefield.css {"outline":"4px solid yellow"}
-        console.log "stopped"
+        minefield.css {"outline":"1em solid green"}
         clearInterval tick
     , 16
 
 
-
-
-
-
-
-
-
-
+setTimeout () ->
+  console.log $("#face")
+  $("#face").on "click", () ->
+    minefield.find(".square").each () ->
+      $(this).data("fertile", null)
+, 500
