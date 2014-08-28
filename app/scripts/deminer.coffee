@@ -21,7 +21,7 @@ getMyNum = (square) ->
 
 countClosed = (squares) ->
   length = 0
-  squares.each () ->
+  squares.each ->
     if $(this).hasClass('blank') || $(this).hasClass('bombflagged')
       length += 1
   length
@@ -44,9 +44,7 @@ research = (square) ->
 
 doNeighborsEqualMyNum = (square) ->
   closedNeighborsLength = countClosed(getNeighbors(square))
-
-  if closedNeighborsLength != 0 && closedNeighborsLength == getMyNum(square)
-    true
+  closedNeighborsLength != 0 && closedNeighborsLength == getMyNum(square)
 
 
 flagNeighbors = (square) ->
@@ -54,8 +52,9 @@ flagNeighbors = (square) ->
   closedNeighborsLength = countClosed(neighbors)
 
   if closedNeighborsLength != 0 && closedNeighborsLength == getMyNum(square)
-    neighbors.each () ->
+    neighbors.each ->
       flagBomb($(this))
+
 
 isFertile = (square) ->
   if !(square.data("fertile") == false)
@@ -63,7 +62,7 @@ isFertile = (square) ->
       square.data("fertile", false)
 
     _isFertile = false
-    getNeighbors(square).each () ->
+    getNeighbors(square).each ->
       if $(this).hasClass("blank")
         _isFertile = true
         square.data("fertile", _isFertile)
@@ -74,23 +73,23 @@ isFertile = (square) ->
 
 
 swipe = (square) ->
-  # square.css {"outline":"red 2px solid"}
   if isFertile square
+    # square.css {"outline":"green 2px solid"}
     flagNeighbors square
     research square
 
 
 $(window).keypress (event) ->
-  if event.which == 106
+  if event.which == 106 # j
     minefield.css {"outline":"1em solid red"}
 
     previousOpenMinefieldLength = 0
     previousPreviousOpenMinefieldLength = 0
     openMinefield = getOpen(minefield)
 
-    tick = setInterval () ->
+    tick = setInterval ->
       if openMinefield.length != previousPreviousOpenMinefieldLength
-          openMinefield.each () ->
+          openMinefield.each ->
             swipe $(this)
 
           previousPreviousOpenMinefieldLength = previousOpenMinefieldLength
@@ -102,9 +101,9 @@ $(window).keypress (event) ->
     , 16
 
 
-setTimeout () ->
+setTimeout ->
   console.log $("#face")
-  $("#face").on "click", () ->
-    minefield.find(".square").each () ->
+  $("#face").on "click", ->
+    minefield.find(".square").each ->
       $(this).data("fertile", null)
 , 500
